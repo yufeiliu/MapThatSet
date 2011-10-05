@@ -2,7 +2,7 @@ package mapthatset.aiplayer.util;
 
 import java.util.Set;
 
-public class Knowledge {
+public class Knowledge implements Comparable<Knowledge> {
 	private Set<Integer> preimage;
 	private Set<Integer> image;
 	private int D;
@@ -31,6 +31,10 @@ public class Knowledge {
 	
 	public int getRecency() {
 		return recency;
+	}
+	
+	public int compareTo(Knowledge other) {
+		return (new Integer(recency)).compareTo(other.getRecency());
 	}
 	
 	public String toString() {

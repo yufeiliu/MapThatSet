@@ -1,45 +1,30 @@
 package mapthatset.aiplayer.appliedRules;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
-import mapthatset.aiplayer.util.AppliedRule;
 import mapthatset.aiplayer.util.Knowledge;
+import mapthatset.aiplayer.util.SetUtil;
 
-public class AppliedDifference implements AppliedRule {
-
-	@Override
-	public void setKnowledgeUsed(List<Knowledge> ku) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public List<Knowledge> getKnowledgeUsed() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+public class AppliedDifference extends AbstractAppliedRule {
+	
 	@Override
 	public Set<Knowledge> apply() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<Knowledge> result = new HashSet<Knowledge>();
+		result.addAll(ku);
+		
+		
+		SetUtil<Integer> util = new SetUtil<Integer>();
+		
+		Knowledge diff = new Knowledge(util.difference(ku.get(1).getPreimage(), ku.get(0).getPreimage()), 
+				util.difference(ku.get(1).getImage(), ku.get(0).getImage()));
+		
+		result.add(diff);
+		return result;
 	}
-
+	
 	@Override
-	public int getRecency() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getSpecificity() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int compareTo(AppliedRule other) {
+	public double getPriorityPenalty() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

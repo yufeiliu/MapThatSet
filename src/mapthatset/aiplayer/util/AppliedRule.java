@@ -14,8 +14,10 @@ public interface AppliedRule extends Comparable<AppliedRule> {
 	//   should return a set that includes the original knowledge (i.e., in ku) as well.
 	public Set<Knowledge> apply();
 	
-	public int getRecency();
-	public int getSpecificity();
+	public double getRecency();
+	public double getSpecificity();
+	
+	public double getPriorityPenalty();
 	
 	public int compareTo(AppliedRule other);
 }
