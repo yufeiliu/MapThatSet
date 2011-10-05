@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import mapthatset.aiplayer.util.Inferrer;
 import mapthatset.aiplayer.util.Knowledge;
 import mapthatset.aiplayer.util.TreeTest;
 import mapthatset.sim.*;
@@ -32,7 +33,7 @@ public class AIGuesser extends Guesser
 		
 		
 		GuesserAction gscReturn = null;
-		ArrayList<Integer>guessList = guesserList.pop();
+		alQueryContent = guesserList.pop();
 		
 		boolean done = true;
 		ArrayList<Integer> answers = new ArrayList<Integer>();
@@ -45,6 +46,7 @@ public class AIGuesser extends Guesser
 				if (k.getPreimage().size() == 1 && k.getPreimage().contains(i) && k.getImage().size()==1) {
 					found = true;
 					answers.add(k.getImage().iterator().next());
+					break;
 				}
 			}
 			
@@ -54,22 +56,11 @@ public class AIGuesser extends Guesser
 			}
 		}
 		
-		if(guessList != null && !done){
-			gscReturn = new GuesserAction( "q", guessList );
+		if(alQueryContent != null && !done){
+			gscReturn = new GuesserAction( "q", alQueryContent );
 		}
 		else{
-			guessList = new  ArrayList<Integer>();
-			guessList.add(new Integer(1));
-			guessList.add(new Integer(1));
-			guessList.add(new Integer(1));
-			guessList.add(new Integer(1));
-			guessList.add(new Integer(1));
-			guessList.add(new Integer(1));
-			guessList.add(new Integer(1));
-			guessList.add(new Integer(1));
-			guessList.add(new Integer(1));
-			guessList.add(new Integer(1));
-			gscReturn = new GuesserAction( "g", guessList );	
+			gscReturn = new GuesserAction( "g", answers );	
 		}
 		
 		//System.out.println(guessList);
@@ -79,6 +70,9 @@ public class AIGuesser extends Guesser
 	
 	@Override
 	public void setResult( ArrayList< Integer > alResult ) {
+		
+		if (alQueryContent==null) return;
+		if (alResult == null) return;
 		
 		alGuess.add( alResult.get( 0 ) );
 		
@@ -98,7 +92,9 @@ public class AIGuesser extends Guesser
 	 * stub
 	 */
 	private void infer() {
-		
+		do {
+			Inferrer.infer(kb);
+		} while (!Inferrer.hasConverged());
 	}
 	
 	@Override
