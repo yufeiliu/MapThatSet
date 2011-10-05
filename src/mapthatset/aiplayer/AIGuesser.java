@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mapthatset.aiplayer.util.Knowledge;
+import mapthatset.aiplayer.util.TreeTest;
 import mapthatset.sim.*;
 
 public class AIGuesser extends Guesser
@@ -17,16 +18,21 @@ public class AIGuesser extends Guesser
 	
 	private Set<Knowledge> kb;
 	
+	TreeTest guesserList = new  TreeTest();
+	
 	public void startNewMapping( int intMappingLength ) {
 		kb = new HashSet<Knowledge>();
 		this.intMappingLength = intMappingLength;
 		alGuess = new ArrayList< Integer >();
+		guesserList.initialize(intMappingLength);
 	}
 	
 	@Override
 	public GuesserAction nextAction() {
+		
+		
 		GuesserAction gscReturn = null;
-		alQueryContent = new ArrayList< Integer >();
+		ArrayList<Integer>guessList = guesserList.pop();
 		
 		boolean done = true;
 		ArrayList<Integer> answers = new ArrayList<Integer>();
@@ -48,17 +54,33 @@ public class AIGuesser extends Guesser
 			}
 		}
 		
-		if (done) {
-			GuesserAction guess = new GuesserAction("g", answers);
-			return guess;
+		if(guessList != null && !done){
+			gscReturn = new GuesserAction( "q", guessList );
+		}
+		else{
+			guessList = new  ArrayList<Integer>();
+			guessList.add(new Integer(1));
+			guessList.add(new Integer(1));
+			guessList.add(new Integer(1));
+			guessList.add(new Integer(1));
+			guessList.add(new Integer(1));
+			guessList.add(new Integer(1));
+			guessList.add(new Integer(1));
+			guessList.add(new Integer(1));
+			guessList.add(new Integer(1));
+			guessList.add(new Integer(1));
+			gscReturn = new GuesserAction( "g", guessList );	
 		}
 		
-		gscReturn = new GuesserAction( "q", alQueryContent );
+		//System.out.println(guessList);
+		
 		return gscReturn;
 	}
 	
 	@Override
 	public void setResult( ArrayList< Integer > alResult ) {
+		
+		alGuess.add( alResult.get( 0 ) );
 		
 		Set<Integer> pi = new HashSet<Integer>();
 		Set<Integer> i = new HashSet<Integer>();
