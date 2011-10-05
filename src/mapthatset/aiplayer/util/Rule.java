@@ -1,10 +1,8 @@
 package mapthatset.aiplayer.util;
 
 import java.util.List;
+import java.util.Set;
 
 public interface Rule {
-	public List<KnowledgePattern> getPatterns();
-	//Specificity score of the rule being applied
-	public int getSpecificty();
-	
+	public Set<AppliedRule> findApplications(List<Knowledge> kb);
 }

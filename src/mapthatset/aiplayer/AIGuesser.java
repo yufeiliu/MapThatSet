@@ -1,7 +1,9 @@
 package mapthatset.aiplayer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import mapthatset.aiplayer.util.Knowledge;
 import mapthatset.sim.*;
@@ -9,53 +11,56 @@ import mapthatset.sim.*;
 public class AIGuesser extends Guesser
 {
 	int intMappingLength;
-	int intLastQueryIndex = 0;
 	ArrayList< Integer > alGuess = new ArrayList< Integer >();
 	String strID = "AIGuesser";
 	
+	ArrayList< Integer > alQueryContent;
+	
 	private List<Knowledge> kb;
 	
-	public void startNewMapping( int intMappingLength )
-	{
+	public void startNewMapping( int intMappingLength ) {
+		kb = new ArrayList<Knowledge>();
 		this.intMappingLength = intMappingLength;
-		intLastQueryIndex = 0;
 		alGuess = new ArrayList< Integer >();
 	}
 	
 	@Override
-	public GuesserAction nextAction()
-	{
-		intLastQueryIndex ++;
+	public GuesserAction nextAction() {
 		GuesserAction gscReturn = null;
-		if ( intLastQueryIndex > intMappingLength )
-		{
-			String strGuessing = "";
-			for ( int intGuessingElement : alGuess )
-			{
-				strGuessing += intGuessingElement + ", ";
-			}
-//			System.out.println( "Guessing: " + strGuessing.substring( 0, strGuessing.length() - 1 ) );
-			gscReturn = new GuesserAction( "g", alGuess );
-		}
-		else
-		{
-//			System.out.println( "Querying: " + intLastQueryIndex );
-			ArrayList< Integer > alQueryContent = new ArrayList< Integer >();
-			alQueryContent.add( intLastQueryIndex );
-			gscReturn = new GuesserAction( "q", alQueryContent );
-		}
+		alQueryContent = new ArrayList< Integer >();
+		alQueryContent.add(1);
+		alQueryContent.add(2);
+		alQueryContent.add(3);
+		alQueryContent.add(4);
+		alQueryContent.add(5);
+		gscReturn = new GuesserAction( "q", alQueryContent );
 		return gscReturn;
 	}
 	
 	@Override
-	public void setResult( ArrayList< Integer > alResult )
-	{
-		alGuess.add( alResult.get( 0 ) );
+	public void setResult( ArrayList< Integer > alResult ) {
+		
+		Set<Integer> pi = new HashSet<Integer>();
+		Set<Integer> i = new HashSet<Integer>();
+		
+		pi.addAll(alQueryContent);
+		i.addAll(alResult);
+		
+		Knowledge gained = new Knowledge(pi, i);
+		kb.add(gained);
+		
+		this.infer();
 	}
 
+	/**
+	 * stub
+	 */
+	private void infer() {
+		
+	}
+	
 	@Override
-	public String getID() 
-	{
+	public String getID() {
 		// TODO Auto-generated method stub
 		return strID;
 	}

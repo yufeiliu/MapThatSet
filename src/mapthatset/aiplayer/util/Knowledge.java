@@ -6,11 +6,15 @@ public class Knowledge {
 	private Set<Integer> preimage;
 	private Set<Integer> image;
 	private int D;
+	private int recency;
+	
+	private static int recencyCounter = 0;
 	
 	public Knowledge(Set<Integer> pi, Set<Integer> i) {
 		preimage = pi;
 		image = i;
 		D = image.size() - preimage.size();
+		recency = recencyCounter++;
 	}
 	
 	public Set<Integer> getPreimage() {
@@ -23,5 +27,9 @@ public class Knowledge {
 	
 	public int getD() {
 		return D;
+	}
+	
+	public int getRecency() {
+		return recency;
 	}
 }
