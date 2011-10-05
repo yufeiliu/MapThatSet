@@ -14,6 +14,10 @@ public class AppliedIntersection extends AbstractAppliedRule {
 		result.addAll(ku);
 		
 		
+		ku.get(0).getPairings(this.getClass().getName()).add(ku.get(1).getRecency());
+		ku.get(1).getPairings(this.getClass().getName()).add(ku.get(0).getRecency());
+		
+		
 		SetUtil<Integer> util = new SetUtil<Integer>();
 		
 		Knowledge intersection = new Knowledge(util.intersect(ku.get(0).getPreimage(), ku.get(1).getPreimage()), 

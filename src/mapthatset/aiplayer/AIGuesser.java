@@ -2,7 +2,6 @@ package mapthatset.aiplayer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import mapthatset.aiplayer.util.Knowledge;
@@ -16,10 +15,10 @@ public class AIGuesser extends Guesser
 	
 	ArrayList< Integer > alQueryContent;
 	
-	private List<Knowledge> kb;
+	private Set<Knowledge> kb;
 	
 	public void startNewMapping( int intMappingLength ) {
-		kb = new ArrayList<Knowledge>();
+		kb = new HashSet<Knowledge>();
 		this.intMappingLength = intMappingLength;
 		alGuess = new ArrayList< Integer >();
 	}
@@ -28,11 +27,32 @@ public class AIGuesser extends Guesser
 	public GuesserAction nextAction() {
 		GuesserAction gscReturn = null;
 		alQueryContent = new ArrayList< Integer >();
-		alQueryContent.add(1);
-		alQueryContent.add(2);
-		alQueryContent.add(3);
-		alQueryContent.add(4);
-		alQueryContent.add(5);
+		
+		boolean done = true;
+		ArrayList<Integer> answers = new ArrayList<Integer>();
+		
+		for (int i = 1; i <= intMappingLength; i++) {
+			
+			boolean found = false;
+			
+			for (Knowledge k : kb) {
+				if (k.getPreimage().size() == 1 && k.getPreimage().contains(i) && k.getImage().size()==1) {
+					found = true;
+					answers.add(k.getImage().iterator().next());
+				}
+			}
+			
+			if (!found) {
+				done = false;
+				break;
+			}
+		}
+		
+		if (done) {
+			GuesserAction guess = new GuesserAction("g", answers);
+			return guess;
+		}
+		
 		gscReturn = new GuesserAction( "q", alQueryContent );
 		return gscReturn;
 	}

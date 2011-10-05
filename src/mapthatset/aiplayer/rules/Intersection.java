@@ -16,21 +16,33 @@ public class Intersection implements Rule {
 	private SetUtil<Integer> setUtil = new SetUtil<Integer>(); 
 	
 	@Override
-	public Set<AppliedRule> findApplications(List<Knowledge> kb) {
+	public Set<AppliedRule> findApplications(Set<Knowledge> kb) {
 		HashSet<String> noDuplicates = new HashSet<String>();
 		
 		Set<AppliedRule> rules = new HashSet<AppliedRule>();
 		
-		for (int i = 0; i < kb.size(); i++) {
+		int i = 0;
+		
+		for (Knowledge k1 : kb) {
 			
-			Knowledge k1 = kb.get(i);
+			i++;
 			
-			for (int j = 0; j < kb.size(); j++) {
+			int j = 0;
+			
+			for (Knowledge k2 : kb) {
+				
+				j++;
+				
 				if (i==j) continue;
 				
-				Knowledge k2 = kb.get(j);
-				
 				if (k1.getD() != k2.getD()) continue;
+				
+				if (k1.getPreimage().containsAll(k2.getPreimage()) && k1.getImage().containsAll(k2.getImage())) continue;
+				if (k2.getPreimage().containsAll(k1.getPreimage()) && k2.getImage().containsAll(k1.getImage())) continue;
+				
+				if (k1.getPairings(AppliedIntersection.class.getName()).contains(k2.getRecency())) {
+					continue;
+				}
 				
 				Set<Integer> piIntersection = setUtil.intersect(k1.getPreimage(), k2.getPreimage());
 				Set<Integer> iIntersection = setUtil.intersect(k1.getImage(), k2.getImage());
@@ -39,7 +51,6 @@ public class Intersection implements Rule {
 				
 				//We already considered this pair
 				if (noDuplicates.contains(Intersection.getStringFromTwoInts(i, j))) continue;
-				
 				
 				AppliedRule rule = new AppliedIntersection();
 				List<Knowledge> ku = new ArrayList<Knowledge>();

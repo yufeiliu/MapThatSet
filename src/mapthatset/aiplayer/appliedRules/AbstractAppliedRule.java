@@ -1,7 +1,6 @@
 package mapthatset.aiplayer.appliedRules;
 
 import java.util.List;
-
 import mapthatset.aiplayer.util.AppliedRule;
 import mapthatset.aiplayer.util.Knowledge;
 
@@ -53,5 +52,19 @@ public abstract class AbstractAppliedRule implements AppliedRule {
 		} else {
 			return Double.compare(other.getSpecificity(), this.getSpecificity());
 		}
+	}
+	
+	public String toString() {
+		
+		String s = "";
+		
+		//String[] tmp = this.getClass().getName().split(".");
+		s += this.getClass().getName() + ": ";
+		
+		for (Knowledge k : ku) {
+			s += k + ", ";
+		}
+		
+		return s;
 	}
 }

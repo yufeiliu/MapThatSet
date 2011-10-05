@@ -30,4 +30,16 @@ public class SetUtil<T> {
 		
 		return ints;
 	}
+	
+	public static Knowledge unionKnowledge(Knowledge k1, Knowledge k2) {
+		Set<Integer> tmp_p = new HashSet<Integer>();
+		Set<Integer> tmp_i = new HashSet<Integer>();
+		tmp_p.addAll(k1.getPreimage());
+		tmp_p.addAll(k2.getPreimage());
+		tmp_i.addAll(k1.getImage());
+		tmp_i.addAll(k2.getImage());
+		
+		return new Knowledge(tmp_p, tmp_i);
+
+	}
 }

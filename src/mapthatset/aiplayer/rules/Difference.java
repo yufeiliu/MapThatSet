@@ -13,21 +13,36 @@ import mapthatset.aiplayer.util.Rule;
 public class Difference implements Rule {
 
 	@Override
-	public Set<AppliedRule> findApplications(List<Knowledge> kb) {
+	public Set<AppliedRule> findApplications(Set<Knowledge> kb) {
 		Set<AppliedRule> rules = new HashSet<AppliedRule>();
 		
-		for (int i = 0; i < kb.size(); i++) {
+		int i = 0;
+		
+		for (Knowledge k1 : kb) {
 			
-			Knowledge k1 = kb.get(i);
+			i++;
 			
-			for (int j = 0; j < kb.size(); j++) {
+			int j = 0;
+			
+			for (Knowledge k2 : kb) {
+				
+				j++;
+				
 				if (i==j) continue;
 				
-				Knowledge k2 = kb.get(j);
 				
 				if (k1.getD() != k2.getD()) continue;
-				if (!(k1.getD() < k2.getD())) continue;
-				if (!(k2.getPreimage().containsAll(k1.getPreimage()) && k2.getImage().containsAll(k1.getImage()))) continue;
+				
+				if (!(k1.getPreimage().size() < k2.getPreimage().size())) {
+					continue;
+				}
+				if (!(k2.getPreimage().containsAll(k1.getPreimage()) && k2.getImage().containsAll(k1.getImage()))) {
+					continue;
+				}
+				
+				if (k1.getPairings(AppliedDifference.class.getName()).contains(k2.getRecency())) {
+					continue;
+				}
 				
 				AppliedRule rule = new AppliedDifference();
 				List<Knowledge> ku = new ArrayList<Knowledge>();

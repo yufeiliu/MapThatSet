@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mapthatset.aiplayer.util.Knowledge;
+import mapthatset.aiplayer.util.SetUtil;
 
 public class AppliedUnion extends AbstractAppliedRule {
 
@@ -12,9 +13,10 @@ public class AppliedUnion extends AbstractAppliedRule {
 		Set<Knowledge> result = new HashSet<Knowledge>();
 		result.addAll(ku);
 		
-		Knowledge union = new Knowledge(ku.get(0).getPreimage(), ku.get(0).getImage());
-		union.getPreimage().addAll(ku.get(1).getPreimage());
-		union.getImage().addAll(ku.get(1).getImage());
+		ku.get(0).getPairings(this.getClass().getName()).add(ku.get(1).getRecency());
+		ku.get(1).getPairings(this.getClass().getName()).add(ku.get(0).getRecency());
+		
+		Knowledge union = SetUtil.unionKnowledge(ku.get(0), ku.get(1));
 		
 		result.add(union);
 		return result;

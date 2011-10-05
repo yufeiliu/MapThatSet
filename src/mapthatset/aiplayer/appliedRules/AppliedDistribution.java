@@ -30,6 +30,6 @@ public class AppliedDistribution extends AbstractAppliedRule {
 	@Override
 	public double getPriorityPenalty() {
 		// TODO Auto-generated method stub
-		return 100;
+		return 30;
 	}
 }

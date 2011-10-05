@@ -13,11 +13,16 @@ public class AppliedDifference extends AbstractAppliedRule {
 		Set<Knowledge> result = new HashSet<Knowledge>();
 		result.addAll(ku);
 		
+		ku.get(0).getPairings(this.getClass().getName()).add(ku.get(1).getRecency());
+		ku.get(1).getPairings(this.getClass().getName()).add(ku.get(0).getRecency());
 		
 		SetUtil<Integer> util = new SetUtil<Integer>();
 		
 		Knowledge diff = new Knowledge(util.difference(ku.get(1).getPreimage(), ku.get(0).getPreimage()), 
 				util.difference(ku.get(1).getImage(), ku.get(0).getImage()));
+		
+		ku.get(1).getPairings(this.getClass().getName()).add(diff.getRecency());
+		diff.getPairings(this.getClass().getName()).add(ku.get(1).getRecency());
 		
 		result.add(diff);
 		return result;
@@ -26,7 +31,7 @@ public class AppliedDifference extends AbstractAppliedRule {
 	@Override
 	public double getPriorityPenalty() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 20;
 	}
 
 }

@@ -19,8 +19,8 @@ public class RuleUtil {
 		
 		//TODO order in which rules are added can be tuned for better performance
 		rules.add(new Distribution());
-		rules.add(new Intersection());
 		rules.add(new Difference());
+		rules.add(new Intersection());
 		rules.add(new IntersectionWithUnequalD());
 		rules.add(new Union());
 		

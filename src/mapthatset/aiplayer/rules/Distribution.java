@@ -13,7 +13,7 @@ import mapthatset.aiplayer.util.Rule;
 public class Distribution implements Rule {
 
 	@Override
-	public Set<AppliedRule> findApplications(List<Knowledge> kb) {
+	public Set<AppliedRule> findApplications(Set<Knowledge> kb) {
 		Set<AppliedRule> rules = new HashSet<AppliedRule>();
 		
 		for (Knowledge k : kb) {
