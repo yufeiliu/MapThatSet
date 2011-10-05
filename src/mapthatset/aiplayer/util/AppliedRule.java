@@ -1,12 +1,13 @@
 package mapthatset.aiplayer.util;
 
+import java.util.List;
 import java.util.Set;
 
 public interface AppliedRule extends Comparable<AppliedRule> {
 	
-	public void setKnowledgeUsed(Set<Knowledge> ku);
+	public void setKnowledgeUsed(List<Knowledge> ku);
 	
-	public Set<Knowledge> getKnowledgeUsed();
+	public List<Knowledge> getKnowledgeUsed();
 	
 	//Remove subset knowledgeUsed from knowledge base, apply this rule, then add resulting knowledge pieces
 	//   If want to preserve previous knowledge pieces used in the rule, implementation

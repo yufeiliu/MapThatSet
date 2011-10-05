@@ -1,5 +1,6 @@
 package mapthatset.aiplayer.appliedRules;
 
+import java.util.List;
 import java.util.Set;
 
 import mapthatset.aiplayer.util.AppliedRule;
@@ -8,13 +9,13 @@ import mapthatset.aiplayer.util.Knowledge;
 public class AppliedUnion implements AppliedRule {
 
 	@Override
-	public void setKnowledgeUsed(Set<Knowledge> ku) {
+	public void setKnowledgeUsed(List<Knowledge> ku) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public Set<Knowledge> getKnowledgeUsed() {
+	public List<Knowledge> getKnowledgeUsed() {
 		// TODO Auto-generated method stub
 		return null;
 	}

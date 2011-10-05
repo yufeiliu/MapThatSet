@@ -32,4 +32,17 @@ public class Knowledge {
 	public int getRecency() {
 		return recency;
 	}
+	
+	public String toString() {
+		String s = "[";
+		for (int p : preimage) {
+			s += p + " ";
+		}
+		s+= "] -> [";
+		for (int i : image) {
+			s += i + " ";
+		}
+		s += "]";
+		return s;
+	}
 }
