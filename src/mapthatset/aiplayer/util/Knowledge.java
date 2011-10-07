@@ -34,6 +34,10 @@ public class Knowledge implements Comparable<Knowledge> {
 		return D;
 	}
 	
+	public boolean isAtomic() {
+		return image.size()==1 && preimage.size()==1;
+	}
+	
 	public int getRecency() {
 		return recency;
 	}

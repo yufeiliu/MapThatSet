@@ -13,10 +13,10 @@ import mapthatset.aiplayer.util.Rule;
 public class Distribution implements Rule {
 
 	@Override
-	public Set<AppliedRule> findApplications(Set<Knowledge> kb) {
+	public Set<AppliedRule> findApplications(Set<Knowledge> kb, Knowledge current) {
 		Set<AppliedRule> rules = new HashSet<AppliedRule>();
 		
-		for (Knowledge k : kb) {
+		Knowledge k = current;
 			if (k.getPreimage().size()>1 && k.getImage().size()==1) {
 				AppliedRule r = new AppliedDistribution();
 				List<Knowledge> ku = new ArrayList<Knowledge>();
@@ -24,7 +24,6 @@ public class Distribution implements Rule {
 				r.setKnowledgeUsed(ku);
 				rules.add(r);
 			}
-		}
 		
 		return rules;
 	}

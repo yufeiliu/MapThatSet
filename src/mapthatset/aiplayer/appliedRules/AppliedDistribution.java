@@ -12,7 +12,6 @@ public class AppliedDistribution extends AbstractAppliedRule {
 		Knowledge tmp = ku.get(0);
 		
 		Set<Knowledge> result = new HashSet<Knowledge>();
-		result.add(tmp);
 		
 		for (int p : tmp.getPreimage()) {
 			Set<Integer> preimage = new HashSet<Integer>();

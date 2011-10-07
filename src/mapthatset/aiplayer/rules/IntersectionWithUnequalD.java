@@ -16,27 +16,22 @@ public class IntersectionWithUnequalD implements Rule {
 	private SetUtil<Integer> setUtil = new SetUtil<Integer>(); 
 	
 	@Override
-	public Set<AppliedRule> findApplications(Set<Knowledge> kb) {
+	public Set<AppliedRule> findApplications(Set<Knowledge> kb, Knowledge current) {
 		Set<AppliedRule> rules = new HashSet<AppliedRule>();
 		
-		int i = 0;
-		
-		for (Knowledge k1 : kb) {
-			
-			i++;
-			
-			int j = 0;
+		Knowledge k1 = current;
 			
 			for (Knowledge k2 : kb) {
-				j++;
+			
 				
-				if (i==j) continue;
+				if (k1.equals(k2)) return new HashSet<AppliedRule>();
 				
 				if (k1.getD() != 0) continue;
 				if (k1.getD() == k2.getD()) continue;
 				
-				//If k1 is atomic, skip
-				if (k1.getPreimage().size() == 1 && k1.getImage().size() == 1) continue;
+				//If k1 or k2 is atomic, skip
+				if (k1.isAtomic() || k2.isAtomic()) continue;
+				
 				if (k1.getPreimage().containsAll(k2.getPreimage()) && k1.getImage().containsAll(k2.getImage())) continue;
 				if (k2.getPreimage().containsAll(k1.getPreimage()) && k2.getImage().containsAll(k1.getImage())) continue;
 				
@@ -60,8 +55,7 @@ public class IntersectionWithUnequalD implements Rule {
 				
 				rules.add(rule);
 			}
-		}
-		
+			
 		return rules;
 	}
 	

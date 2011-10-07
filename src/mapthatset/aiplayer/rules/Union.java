@@ -14,24 +14,14 @@ import mapthatset.aiplayer.util.SetUtil;
 public class Union implements Rule {
 
 	@Override
-	public Set<AppliedRule> findApplications(Set<Knowledge> kb) {
-		HashSet<String> noDuplicates = new HashSet<String>();
-		
+	public Set<AppliedRule> findApplications(Set<Knowledge> kb, Knowledge current) {
 		Set<AppliedRule> rules = new HashSet<AppliedRule>();
 		
-		int i = 0;
+		Knowledge k1 = current;
 		
-		for (Knowledge k1 : kb) {
-			
-			i++;
-			
-			int j = 0;
-			
 			for (Knowledge k2 : kb) {
 				
-				j++;
-				
-				if (i==j) continue;
+				if (k1.equals(k2)) return new HashSet<AppliedRule>();
 				
 				if (k1.getPairings(AppliedUnion.class.getName()).contains(k2.getRecency())) {
 					continue;
@@ -42,9 +32,6 @@ public class Union implements Rule {
 				
 				if (kb.contains(SetUtil.unionKnowledge(k1,k2))) continue;
 				
-				//We already considered this pair
-				if (noDuplicates.contains(Union.getStringFromTwoInts(i, j))) continue;
-				
 				AppliedRule rule = new AppliedUnion();
 				List<Knowledge> ku = new ArrayList<Knowledge>();
 				
@@ -53,24 +40,9 @@ public class Union implements Rule {
 				
 				rule.setKnowledgeUsed(ku);
 				rules.add(rule);
-				
-				noDuplicates.add(Union.getStringFromTwoInts(i, j));
 			}
-		}
 		
 		return rules;
 	}
 	
-	private static String getStringFromTwoInts(int a, int b) {
-		int tmp;
-		//make sure a,b are in ascending order
-		if (b < a) {
-			tmp = b;
-			b = a;
-			a = tmp;
-		}
-		
-		return a + "," + b;
-	}
-
 }

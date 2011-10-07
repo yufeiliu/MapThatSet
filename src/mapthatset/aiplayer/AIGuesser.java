@@ -2,10 +2,16 @@ package mapthatset.aiplayer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.Stack;
+import java.util.TreeSet;
 
 import mapthatset.aiplayer.util.Inferrer;
 import mapthatset.aiplayer.util.Knowledge;
+import mapthatset.aiplayer.util.NumberCounter;
 import mapthatset.aiplayer.util.TreeTest;
 import mapthatset.sim.*;
 
@@ -18,11 +24,31 @@ public class AIGuesser extends Guesser
 	ArrayList< Integer > alQueryContent;
 	
 	private Set<Knowledge> kb;
+	private Queue<Knowledge> newkb;
 	
-	TreeTest guesserList = new  TreeTest();
+	private ArrayList<Integer> answers;
+	
+	private SortedSet<NumberCounter> freqs; 
+	
+	TreeTest guesserList = new TreeTest();
 	
 	public void startNewMapping( int intMappingLength ) {
 		kb = new HashSet<Knowledge>();
+		newkb = new LinkedList<Knowledge>();
+		
+		answers = new ArrayList<Integer>();
+		freqs = new TreeSet<NumberCounter>();
+		
+		for (int i = 0; i < intMappingLength; i++) {
+			answers.add(-1);
+			
+			NumberCounter nc = new NumberCounter();
+			nc.number = i+1;
+			nc.freq = 0;
+			
+			freqs.add(nc);
+		}
+	
 		this.intMappingLength = intMappingLength;
 		alGuess = new ArrayList< Integer >();
 		guesserList.initialize(intMappingLength);
@@ -30,40 +56,19 @@ public class AIGuesser extends Guesser
 	
 	@Override
 	public GuesserAction nextAction() {
-		
-		
 		GuesserAction gscReturn = null;
-		alQueryContent = guesserList.pop();
 		
-		boolean done = true;
-		ArrayList<Integer> answers = new ArrayList<Integer>();
-		
-		for (int i = 1; i <= intMappingLength; i++) {
-			
-			boolean found = false;
-			
-			for (Knowledge k : kb) {
-				if (k.getPreimage().size() == 1 && k.getPreimage().contains(i) && k.getImage().size()==1) {
-					found = true;
-					answers.add(k.getImage().iterator().next());
-					break;
-				}
-			}
-			
-			if (!found) {
-				done = false;
-				break;
-			}
+		if (kb.size()<2) {
+			alQueryContent = guesserList.pop();
+		} else {
+			alQueryContent = getSmartGuess();
 		}
 		
-		if(alQueryContent != null && !done){
+		if (alQueryContent != null && !done()) {
 			gscReturn = new GuesserAction( "q", alQueryContent );
-		}
-		else{
+		} else {
 			gscReturn = new GuesserAction( "g", answers );	
 		}
-		
-		//System.out.println(guessList);
 		
 		return gscReturn;
 	}
@@ -83,18 +88,115 @@ public class AIGuesser extends Guesser
 		i.addAll(alResult);
 		
 		Knowledge gained = new Knowledge(pi, i);
-		kb.add(gained);
 		
-		this.infer();
+		//This is a really bad guess, we already know the result
+		//TODO make sure this never happens
+		if (kb.contains(gained)) return;
+		
+		if (kb.size()==0) {
+			kb.add(gained);
+		} else {
+			newkb.add(gained);
+			this.infer();
+		}
 	}
 
 	/**
 	 * stub
 	 */
 	private void infer() {
-		do {
-			Inferrer.infer(kb);
-		} while (!Inferrer.hasConverged());
+		//do {
+			Inferrer.infer(kb, newkb, answers, freqs);
+		//} while (!Inferrer.hasConverged());
+	}
+	
+	private boolean done() {
+		boolean answer = true;
+		
+		System.out.print("\n**** Checking answers: ");
+		
+		for (int i : answers) {
+			answer = answer && (i!=-1);
+			
+			System.out.print(i + " ");
+			
+			if (!answer) break;
+		}
+		
+		System.out.println();
+		
+		return answer;
+	}
+	
+	private ArrayList<Integer> getSmartGuess() {
+		
+		//TODO Tune these three params!
+		int cappedLength = intMappingLength / 2;
+		int cappedDiff = 3;
+		//TODO this is probably pretty naive
+		int cappedIntersected = Math.min(1, cappedLength); 
+		
+		
+		System.out.println("\n***** CURRENT NUMBER COUNTERS *****");
+		for (NumberCounter nc : freqs) {
+			System.out.println(nc);
+		}
+		
+		
+		ArrayList<Integer> guess = new ArrayList<Integer>();
+		Stack<Integer> stack = new Stack<Integer>();
+		
+		int initialFreq = -1;
+		
+		boolean stopAdding = false;
+		
+		for (NumberCounter nc : freqs) {
+			int cur = nc.number;
+			int freq = nc.freq;
+			
+			if (initialFreq==-1) initialFreq = freq;
+			
+			if (!stopAdding) {
+				
+				//Only query numbers not solved yet
+				if (answers.get(cur-1)==-1) {
+					System.out.println(cur + " added to query");
+					guess.add(cur);
+				}
+				
+				if (freq - initialFreq >= cappedDiff) stopAdding = true;
+				if (guess.size() >= cappedLength) stopAdding = true;
+			}
+			
+			stack.add(cur);
+		}
+		
+		int intersectedAdded = 0;
+		
+		while (!stack.empty()) {
+			int cur = stack.pop();
+			
+			//Never intersect with completely solved mappings (i.e., atomic mappings)
+			if (answers.get(cur-1)!=-1) {
+				continue;
+			}
+			
+			intersectedAdded++;
+			
+			//TODO: potential bug, did not check for overlap with previous loop
+			guess.add(cur);
+			if (intersectedAdded >= cappedIntersected) break;
+		}
+		
+		System.out.print("\n**** query: ");
+		
+		for (int i : guess) {
+			System.out.print(i + " ");
+		}
+		
+		System.out.println();
+		
+		return guess;
 	}
 	
 	@Override

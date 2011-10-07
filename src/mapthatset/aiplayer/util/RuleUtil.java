@@ -22,7 +22,9 @@ public class RuleUtil {
 		rules.add(new Difference());
 		rules.add(new Intersection());
 		rules.add(new IntersectionWithUnequalD());
-		rules.add(new Union());
+		
+		//TODO: figure out what we are gonna
+		//rules.add(new Union());
 		
 		return rules;
 	}

@@ -16,41 +16,38 @@ public class Intersection implements Rule {
 	private SetUtil<Integer> setUtil = new SetUtil<Integer>(); 
 	
 	@Override
-	public Set<AppliedRule> findApplications(Set<Knowledge> kb) {
-		HashSet<String> noDuplicates = new HashSet<String>();
-		
+	public Set<AppliedRule> findApplications(Set<Knowledge> kb, Knowledge current) {
 		Set<AppliedRule> rules = new HashSet<AppliedRule>();
-		
-		int i = 0;
-		
-		for (Knowledge k1 : kb) {
-			
-			i++;
-			
-			int j = 0;
+	
+		Knowledge k1 = current;
 			
 			for (Knowledge k2 : kb) {
 				
-				j++;
-				
-				if (i==j) continue;
+				if (k1.equals(k2)) return new HashSet<AppliedRule>();
 				
 				if (k1.getD() != k2.getD()) continue;
 				
 				if (k1.getPreimage().containsAll(k2.getPreimage()) && k1.getImage().containsAll(k2.getImage())) continue;
 				if (k2.getPreimage().containsAll(k1.getPreimage()) && k2.getImage().containsAll(k1.getImage())) continue;
 				
-				if (k1.getPairings(AppliedIntersection.class.getName()).contains(k2.getRecency())) {
+				if (k1.getPairings(AppliedIntersection.class.getName()).contains(k2.getRecency()))
 					continue;
-				}
 				
 				Set<Integer> piIntersection = setUtil.intersect(k1.getPreimage(), k2.getPreimage());
 				Set<Integer> iIntersection = setUtil.intersect(k1.getImage(), k2.getImage());
 				
 				if (piIntersection.size() < 1 || iIntersection.size() < 1) continue;
 				
-				//We already considered this pair
-				if (noDuplicates.contains(Intersection.getStringFromTwoInts(i, j))) continue;
+				/*
+				 * Deal with this case:
+				 * 
+				 * * mapthatset.aiplayer.appliedRules.AppliedIntersection: [2 3 4 ] -> [1 2 ], [1 3 4 ] -> [1 2 ], 
+				 *   generated: [3 4 ] -> [1 2 ]
+				 */
+				if (iIntersection.size() == k1.getImage().size() && iIntersection.size() == k2.getImage().size()
+						&& iIntersection.size() == piIntersection.size())
+					continue;
+				
 				
 				AppliedRule rule = new AppliedIntersection();
 				List<Knowledge> ku = new ArrayList<Knowledge>();
@@ -62,23 +59,9 @@ public class Intersection implements Rule {
 				
 				rules.add(rule);
 				
-				noDuplicates.add(Intersection.getStringFromTwoInts(i, j));
 			}
-		}
 		
 		return rules;
-	}
-	
-	private static String getStringFromTwoInts(int a, int b) {
-		int tmp;
-		//make sure a,b are in ascending order
-		if (b < a) {
-			tmp = b;
-			b = a;
-			a = tmp;
-		}
-		
-		return a + "," + b;
 	}
 
 }

@@ -13,29 +13,25 @@ import mapthatset.aiplayer.util.Rule;
 public class Difference implements Rule {
 
 	@Override
-	public Set<AppliedRule> findApplications(Set<Knowledge> kb) {
+	public Set<AppliedRule> findApplications(Set<Knowledge> kb, Knowledge current) {
 		Set<AppliedRule> rules = new HashSet<AppliedRule>();
 		
-		int i = 0;
-		
-		for (Knowledge k1 : kb) {
-			
-			i++;
-			
-			int j = 0;
+		Knowledge k1 = current;
 			
 			for (Knowledge k2 : kb) {
 				
-				j++;
-				
-				if (i==j) continue;
-				
+				//Don't compare if equal
+				if (k1.equals(k2)) return new HashSet<AppliedRule>();
 				
 				if (k1.getD() != k2.getD()) continue;
 				
+				//Switch up k1 and k2 if in wrong order
 				if (!(k1.getPreimage().size() < k2.getPreimage().size())) {
-					continue;
+					Knowledge tmp = k1;
+					k1 = k2;
+					k2 = tmp;
 				}
+				
 				if (!(k2.getPreimage().containsAll(k1.getPreimage()) && k2.getImage().containsAll(k1.getImage()))) {
 					continue;
 				}
@@ -54,7 +50,6 @@ public class Difference implements Rule {
 				
 				rules.add(rule);
 			}
-		}
 		
 		return rules;
 	}

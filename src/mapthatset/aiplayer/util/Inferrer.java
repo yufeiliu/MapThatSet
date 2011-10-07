@@ -1,8 +1,12 @@
 package mapthatset.aiplayer.util;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * This class infers new knowledge from knowledge base
@@ -14,13 +18,82 @@ public class Inferrer {
 	
 	public static boolean hasConverged() { return converged; }
 	
-	public static void infer(Set<Knowledge> kb) {
-		PriorityQueue<AppliedRule> applicables = new PriorityQueue<AppliedRule>();
+	public static void infer(Set<Knowledge> kb, Queue<Knowledge> newkb, ArrayList<Integer> answers, SortedSet<NumberCounter> freqs) {
 		
-		for (Rule rule : RuleUtil.getRules()) {
-			applicables.addAll(rule.findApplications(kb));
+		Map<Integer, NumberCounter> ncs = new HashMap<Integer, NumberCounter>();
+		for (NumberCounter nc : freqs) {
+			System.out.println("added nc: " + nc);
+			ncs.put(nc.number, nc);
 		}
 		
+		
+		while (newkb.size()>0) {
+			PriorityQueue<AppliedRule> applicables = new PriorityQueue<AppliedRule>();
+			
+			Knowledge cur = newkb.remove();
+			
+			System.out.println("\nCurrent KB:");
+			
+			for (Knowledge tmpk : kb) {
+				System.out.println("- " + tmpk);
+			}
+			
+			System.out.println("Considering new knowledge: " + cur);
+			
+			for (Rule rule : RuleUtil.getRules()) {
+				applicables.addAll(rule.findApplications(kb, cur));
+			}
+			
+			if (applicables.size()>0) {
+				System.out.println("Current applicable rules:");
+			} else {
+				System.out.println("No applicable rules!");
+			}
+			
+			for (AppliedRule ar : applicables) {
+				
+				System.out.println("* " + ar);
+				
+				Set<Knowledge> resultant = ar.apply();
+				
+				System.out.print("* generated: ");
+				for (Knowledge kk : resultant) {
+					System.out.print(kk + ", ");
+				}
+				System.out.println();
+				
+				//This is weak, may not work on distribution
+				if (kb.containsAll(resultant)) continue;
+				
+				newkb.addAll(resultant);
+			}
+			
+			if (cur.isAtomic()) {
+				int preimage = cur.getPreimage().iterator().next();
+				int image = cur.getImage().iterator().next();
+				
+				System.out.println("** solved: " + preimage + " -> " + image);
+				
+				answers.set(preimage - 1, image);
+			}
+			
+			for (int pi : cur.getPreimage()) {
+				
+				NumberCounter toRemove = ncs.get(pi);
+				NumberCounter toAdd = new NumberCounter();
+				toAdd.number = toRemove.number;
+				toAdd.freq = toAdd.freq + 1;
+				
+				freqs.remove(toRemove);
+				freqs.add(toAdd);
+			}
+			
+			kb.add(cur);
+		}
+		
+		
+		
+		/*
 		if (applicables.size() == 0) {
 			converged = true;
 			System.out.println("Cannot select a rule, converged!");
@@ -42,8 +115,6 @@ public class Inferrer {
 			converged = false;
 			
 			int beforeSize = kb.size();
-			
-			kb.removeAll(best.getKnowledgeUsed());
 			
 			kb.addAll(best.apply());
 			
@@ -79,5 +150,6 @@ public class Inferrer {
 			if (kb.size() != beforeSize) break;
 			
 		}
+		*/
 	}
 }

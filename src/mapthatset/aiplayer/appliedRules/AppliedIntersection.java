@@ -11,8 +11,6 @@ public class AppliedIntersection extends AbstractAppliedRule {
 	@Override
 	public Set<Knowledge> apply() {
 		Set<Knowledge> result = new HashSet<Knowledge>();
-		result.addAll(ku);
-		
 		
 		ku.get(0).getPairings(this.getClass().getName()).add(ku.get(1).getRecency());
 		ku.get(1).getPairings(this.getClass().getName()).add(ku.get(0).getRecency());
