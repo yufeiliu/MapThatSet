@@ -1,2 +1,2 @@
-//mapthatset.dumbplayer.DumbGuesser
-mapthatset.aiplayer.AIGuesser
+mapthatset.dumbplayer.DumbGuesser
+//mapthatset.aiplayer.AIGuesser

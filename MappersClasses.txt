@@ -1,1 +1,2 @@
 mapthatset.dumbplayer.DumbMapper
+mapthatset.aiplayer.AIMapper
