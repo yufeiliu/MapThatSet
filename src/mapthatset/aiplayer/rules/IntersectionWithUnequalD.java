@@ -44,6 +44,7 @@ public class IntersectionWithUnequalD implements Rule {
 				
 				if (piIntersection.size() < 1 || iIntersection.size() < 1) continue;
 				
+				if (iIntersection.size() > piIntersection.size()) continue;
 				
 				AppliedRule rule = new AppliedIntersection();
 				List<Knowledge> ku = new ArrayList<Knowledge>();

@@ -38,6 +38,8 @@ public class Intersection implements Rule {
 				
 				if (piIntersection.size() < 1 || iIntersection.size() < 1) continue;
 				
+				if (iIntersection.size() > piIntersection.size()) continue;
+				
 				/*
 				 * Deal with this case:
 				 * 

@@ -30,6 +30,9 @@ public class AIGuesser extends Guesser
 	
 	private SortedSet<NumberCounter> freqs; 
 	
+	//TODO tune this
+	private double cappedLength;
+	
 	TreeTest guesserList = new TreeTest();
 	
 	public void startNewMapping( int intMappingLength ) {
@@ -48,6 +51,8 @@ public class AIGuesser extends Guesser
 			
 			freqs.add(nc);
 		}
+		
+		cappedLength = intMappingLength * 1.0 / 2;
 	
 		this.intMappingLength = intMappingLength;
 		alGuess = new ArrayList< Integer >();
@@ -130,12 +135,13 @@ public class AIGuesser extends Guesser
 	
 	private ArrayList<Integer> getSmartGuess() {
 		
-		//TODO Tune these three params!
-		int cappedLength = intMappingLength / 2;
+		
+		int intCappedLength = (int) Math.round(cappedLength);
+		
+		//TODO Tune these two params!
 		int cappedDiff = 3;
 		//TODO this is probably pretty naive
-		int cappedIntersected = Math.min(1, cappedLength); 
-		
+		int cappedIntersected = Math.min(1, intCappedLength); 
 		
 		System.out.println("\n***** CURRENT NUMBER COUNTERS *****");
 		for (NumberCounter nc : freqs) {
@@ -164,8 +170,8 @@ public class AIGuesser extends Guesser
 					guess.add(cur);
 				}
 				
-				if (freq - initialFreq >= cappedDiff) stopAdding = true;
-				if (guess.size() >= cappedLength) stopAdding = true;
+				if (freq - initialFreq >= intCappedLength) stopAdding = true;
+				if (guess.size() >= intCappedLength) stopAdding = true;
 			}
 			
 			stack.add(cur);
@@ -195,6 +201,9 @@ public class AIGuesser extends Guesser
 		}
 		
 		System.out.println();
+		
+		cappedLength-=0.45;
+		if (cappedLength<1) cappedLength = 1;
 		
 		return guess;
 	}

@@ -22,7 +22,6 @@ public class Inferrer {
 		
 		Map<Integer, NumberCounter> ncs = new HashMap<Integer, NumberCounter>();
 		for (NumberCounter nc : freqs) {
-			System.out.println("added nc: " + nc);
 			ncs.put(nc.number, nc);
 		}
 		
@@ -74,7 +73,14 @@ public class Inferrer {
 				
 				System.out.println("** solved: " + preimage + " -> " + image);
 				
-				answers.set(preimage - 1, image);
+				if (answers.get(preimage-1) == -1)
+					answers.set(preimage - 1, image);
+			}
+			
+			
+			System.out.println("** Current ncs");
+			for (NumberCounter nct : ncs.values()) {
+				System.out.println(nct);
 			}
 			
 			for (int pi : cur.getPreimage()) {
@@ -82,7 +88,7 @@ public class Inferrer {
 				NumberCounter toRemove = ncs.get(pi);
 				NumberCounter toAdd = new NumberCounter();
 				toAdd.number = toRemove.number;
-				toAdd.freq = toAdd.freq + 1;
+				toAdd.freq = toRemove.freq + 1;
 				
 				freqs.remove(toRemove);
 				freqs.add(toAdd);
