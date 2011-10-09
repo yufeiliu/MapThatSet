@@ -21,6 +21,11 @@ public class AppliedIntersection extends AbstractAppliedRule {
 		Knowledge intersection = new Knowledge(util.intersect(ku.get(0).getPreimage(), ku.get(1).getPreimage()), 
 				util.intersect(ku.get(0).getImage(), ku.get(1).getImage()));
 		
+		
+		if (!intersection.isAtomic() && intersection.getImage().size()>1) {
+			intersection.setRestricted(true);
+		}
+		
 		result.add(intersection);
 		return result;
 	}

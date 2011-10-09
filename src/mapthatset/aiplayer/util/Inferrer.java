@@ -31,11 +31,13 @@ public class Inferrer {
 			
 			Knowledge cur = newkb.remove();
 			
+			/*
 			System.out.println("\nCurrent KB:");
 			
 			for (Knowledge tmpk : kb) {
 				System.out.println("- " + tmpk);
 			}
+			*/
 			
 			System.out.println("Considering new knowledge: " + cur);
 			
@@ -75,12 +77,6 @@ public class Inferrer {
 				
 				if (answers.get(preimage-1) == -1)
 					answers.set(preimage - 1, image);
-			}
-			
-			
-			System.out.println("** Current ncs");
-			for (NumberCounter nct : ncs.values()) {
-				System.out.println(nct);
 			}
 			
 			for (int pi : cur.getPreimage()) {

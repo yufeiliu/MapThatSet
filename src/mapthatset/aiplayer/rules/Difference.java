@@ -16,9 +16,9 @@ public class Difference implements Rule {
 	public Set<AppliedRule> findApplications(Set<Knowledge> kb, Knowledge current) {
 		Set<AppliedRule> rules = new HashSet<AppliedRule>();
 		
-		Knowledge k1 = current;
-			
 			for (Knowledge k2 : kb) {
+				
+				Knowledge k1 = current;
 				
 				//Don't compare if equal
 				if (k1.equals(k2)) return new HashSet<AppliedRule>();
@@ -32,13 +32,14 @@ public class Difference implements Rule {
 					k2 = tmp;
 				}
 				
+				//Restricted fact can't be used in difference
+				if (k2.isRestricted()) continue;
+				
 				if (!(k2.getPreimage().containsAll(k1.getPreimage()) && k2.getImage().containsAll(k1.getImage()))) {
 					continue;
 				}
 				
-				if (k1.getPairings(AppliedDifference.class.getName()).contains(k2.getRecency())) {
-					continue;
-				}
+				// if (k1.getPairings(AppliedDifference.class.getName()).contains(k2.getRecency())) continue;
 				
 				AppliedRule rule = new AppliedDifference();
 				List<Knowledge> ku = new ArrayList<Knowledge>();

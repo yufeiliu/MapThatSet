@@ -1,5 +1,6 @@
 package mapthatset.aiplayer.util;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -10,6 +11,7 @@ public class Knowledge implements Comparable<Knowledge> {
 	private Set<Integer> image;
 	private int D;
 	private int recency;
+	private boolean restricted;
 	
 	private Map<String, Set<Integer>> pairings = new HashMap<String, Set<Integer>>();
 	
@@ -20,6 +22,8 @@ public class Knowledge implements Comparable<Knowledge> {
 		image = i;
 		D = image.size() - preimage.size();
 		recency = recencyCounter++;
+		
+		restricted = false;
 	}
 	
 	public Set<Integer> getPreimage() {
@@ -40,6 +44,14 @@ public class Knowledge implements Comparable<Knowledge> {
 	
 	public int getRecency() {
 		return recency;
+	}
+	
+	public boolean isRestricted() {
+		return restricted;
+	}
+	
+	public void setRestricted(boolean r) {
+		restricted = r;
 	}
 	
 	public Set<Integer> getPairings(String c) {
@@ -64,6 +76,11 @@ public class Knowledge implements Comparable<Knowledge> {
 		if (!obj.getClass().equals(this.getClass())) return false;
 		if (this.compareTo((Knowledge) obj) == 0) return true;
 		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(new Object[] {preimage, image});
 	}
 	
 	public String toString() {

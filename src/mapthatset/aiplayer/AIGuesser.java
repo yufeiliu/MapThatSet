@@ -118,13 +118,8 @@ public class AIGuesser extends Guesser
 	private boolean done() {
 		boolean answer = true;
 		
-		System.out.print("\n**** Checking answers: ");
-		
 		for (int i : answers) {
 			answer = answer && (i!=-1);
-			
-			System.out.print(i + " ");
-			
 			if (!answer) break;
 		}
 		
@@ -143,10 +138,12 @@ public class AIGuesser extends Guesser
 		//TODO this is probably pretty naive
 		int cappedIntersected = Math.min(1, intCappedLength); 
 		
+		/*
 		System.out.println("\n***** CURRENT NUMBER COUNTERS *****");
 		for (NumberCounter nc : freqs) {
 			System.out.println(nc);
 		}
+		*/
 		
 		
 		ArrayList<Integer> guess = new ArrayList<Integer>();
@@ -166,7 +163,7 @@ public class AIGuesser extends Guesser
 				
 				//Only query numbers not solved yet
 				if (answers.get(cur-1)==-1) {
-					System.out.println(cur + " added to query");
+					//System.out.println(cur + " added to query");
 					guess.add(cur);
 				}
 				
